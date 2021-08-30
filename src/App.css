@@ -1,0 +1,74 @@
+body {
+  font-family: 'monospace' !important;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ama-guest-name {
+  font-size: 1.4em !important; 
+  font-weight: 900;
+}
+
+.ama-desc {
+  color: gray;
+}
+
+
+.btn-outline-primary {
+  border-color: #6320EE !important;
+  color: #6320EE !important;
+}
+
+.btn-primary {
+  border-color: #6320EE !important;
+  background-color: #6320EE !important;
+  color: white;
+}
+
+.btn-success, .swal-button--confirm {
+  border-color: #AAE935 !important;
+  background-color: #AAE935 !important;
+  color: black !important;
+}
+
+.btn-danger {
+  border-color: #B9314F !important;
+  background-color: #B9314F !important;
+  color: white !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active {
+  background-color: #6320EE !important;
+  border-color: #6320EE !important;
+  color: white !important;
+}
+
+code {
+  color: #a179f4 !important;
+}
