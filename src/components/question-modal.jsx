@@ -27,7 +27,7 @@ render() {
                     <div>
                         <input
                             placeholder="AMA ID (e.g. @arweaveNews_1615928471657_AMA)"
-                            className="id-field mt-2"
+                            className="modal-field mt-2"
                             type="text"
                             id="amaId"
                             name="amaId"
@@ -39,7 +39,7 @@ render() {
                     <div>
                         <textarea
                             placeholder="Your question..."
-                            className="question-field"
+                            className="modal-field"
                             type="text"
                             rows="5"
                             id="questionText"

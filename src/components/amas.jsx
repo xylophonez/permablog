@@ -1,5 +1,5 @@
 import { React, Component } from 'react'
-import { Button, Container, Modal, Card, } from 'react-bootstrap'
+import { Button, Container, Card, Badge } from 'react-bootstrap'
 import ReactTooltip from 'react-tooltip'
 
 export default class Amas extends Component {
@@ -9,6 +9,10 @@ export default class Amas extends Component {
     this.state = {
      questionModalOpen: false
     };
+  }
+
+  componentDidMount() {
+    this.setState({loading: true})
   }
 
   parseActiveAmas = () => {
@@ -24,13 +28,13 @@ export default class Amas extends Component {
           <div className="">
             <Card.Header>
               <Button size="lg" variant="link"  href={`#/amas/${ama.id}`}>{ama.guests || ama.guest}</Button>
-              <span className="small" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions.">[{ama.reward} $ARN]</span>
+              <span className="small" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions."><Badge bg="info">{ama.reward} $ARN</Badge> <Badge bg="success">Active</Badge> </span>
               <ReactTooltip globalEventOff="hover"/>
             </Card.Header>
           </div>
           <Card.Body>
             <p>{ama.description}</p>
-            <Button className="mb-3" onClick={() => this.showQuestionModal(ama)} variant="outline-primary">Ask a question</Button>
+            <Button className="mb-3"  href={`#/amas/${ama.id}`} variant="outline-primary">Go to AMA</Button>
             <footer className="ama-id"><code className="mt-2">AMA id: {ama.id}</code></footer>
           </Card.Body>
           </Card>
@@ -38,7 +42,9 @@ export default class Amas extends Component {
         )
       }
     }
+
     return amasHtml
+
   }
 
   parseArchivedAmas = () => {
@@ -54,7 +60,7 @@ export default class Amas extends Component {
           <div className="">
             <Card.Header>
               <Button size="lg" variant="link"  href={`#/amas/${ama.id}`}>{ama.guests || ama.guest}</Button>
-              <span className="small" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions.">[{ama.reward} $ARN]</span>
+              <span><Badge bg="secondary">Archived</Badge></span>
               <ReactTooltip globalEventOff="hover"/>
             </Card.Header>
           </div>
@@ -71,23 +77,21 @@ export default class Amas extends Component {
   //    <><div className="h2 mt-4">Archived AMAs</div></>
 //)
 
-
     return amasHtml
   }
 
   render() {
     return(
       <>
-
-
-    
-      <div className="h2">Active AMAs</div>
-      <Container>
-        {this.parseActiveAmas()}
-      </Container>
-      <Container>
-        {this.parseArchivedAmas()}
-      </Container>
+        <div className="h2">AMAs</div>
+        {!this.state.loading ? <h5>Loading...</h5> :
+        <><Container>
+          {this.parseActiveAmas()}
+        </Container>
+        <Container>
+          {this.parseArchivedAmas()}
+        </Container></>
+        }
       </>
     )
   }

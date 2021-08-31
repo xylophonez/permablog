@@ -27,7 +27,7 @@ render() {
                     <div>
                         <input
                             placeholder="Question ID"
-                            className="id-field mt-2"
+                            className="modal-field mt-2"
                             type="text"
                             id="qId"
                             name="qId"
@@ -38,8 +38,8 @@ render() {
                     </div>
                     <div>
                         <textarea
-                            placeholder="Your question..."
-                            className="question-field"
+                            placeholder="Your answer..."
+                            className="modal-field"
                             type="text"
                             rows="5"
                             id="answerText"

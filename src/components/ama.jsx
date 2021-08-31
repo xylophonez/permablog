@@ -1,5 +1,5 @@
 import { React, Component } from 'react'
-import { Alert, Button, Row, Card } from 'react-bootstrap'
+import { Alert, Button, Row, Card, Badge } from 'react-bootstrap'
 import QuestionModal from './question-modal.jsx'
 import AnswerModal from './answer-modal.jsx'
 import ReactTooltip from 'react-tooltip'
@@ -26,7 +26,9 @@ loadAma = async () => {
 
 
   async componentDidMount() {
+    this.setState({loading: true})
     this.setState({ama: await this.lookUpAma()})
+    this.setState({loading: false})
   }
   
   amaGuest = (ama) => {
@@ -66,9 +68,9 @@ loadAma = async () => {
               <p>{a.answer}</p>
             </>
           )
+        return answerHtml // only find the first answer
         }
       }
-      return answerHtml
     }
 
   lookUpAma = async () => {
@@ -87,7 +89,7 @@ loadAma = async () => {
         <div>
         <div className="">
             <span className="ama-guest-name">{this.amaGuest(ama)}</span>
-            <span className="small p-4" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions.">[{ama.reward} $ARN]</span>
+            {!ama.imported ? <span className="small p-4" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions."><Badge bg="info">{ama.reward} $ARN</Badge></span> : null }
             <ReactTooltip globalEventOff="hover"/>
         </div>
           <p className="ama-desc">{ama.description}</p>
@@ -197,7 +199,9 @@ loadAma = async () => {
        />
        : null
        }
-      {this.state.ama}
+      {this.state.loading? <h5>Loading AMA...</h5> : 
+      <>{this.state.ama}</>
+      }
       </>
     )
   }

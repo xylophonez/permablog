@@ -10,9 +10,8 @@ export default class Index extends Component {
   }
 
   render() {
-    console.log(this.props)
     return(
-      <>"Hello!!"</>
+      <></>
     )
   }
 }

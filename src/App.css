@@ -72,3 +72,7 @@ body {
 code {
   color: #a179f4 !important;
 }
+
+.modal-field {
+  width: 100%;
+}
