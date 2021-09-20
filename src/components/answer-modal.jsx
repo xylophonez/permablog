@@ -7,8 +7,13 @@ export default class AnswerModal extends Component {
     super(props);
     this.state = {
       answer: null,
-      addr: '123'
+      addr: null
     };
+  }
+
+  componentDidMount() {
+    let addr = window.arweaveWallet.getActiveAddress()
+    this.setState({addr: addr})
   }
 
   handleChange = (e) => {
@@ -19,6 +24,8 @@ render() {
   return(
   <>
   <Modal
+        size="lg"
+        centered
         show={this.props.showAnswerModal}
         onHide={this.props.hideAnswerModal}
       >
@@ -27,7 +34,7 @@ render() {
                     <div>
                         <input
                             placeholder="Question ID"
-                            className="modal-field mt-2"
+                            className="modal-field mt-2 mb-2"
                             type="text"
                             id="qId"
                             name="qId"

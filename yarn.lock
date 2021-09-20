@@ -11145,6 +11145,11 @@
     "unquote" "~1.1.1"
     "util.promisify" "~1.0.0"
 
+"sweetalert2@^11.1.4":
+  "integrity" "sha512-CTNLviF6w1wyh1ou2UY8RpZasV2RiXbO6489v+a1Swz4jrUyuFDDjMZ9tMMVFnxTMdiUGfYiJoFUniZbHSEnHw=="
+  "resolved" "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.1.4.tgz"
+  "version" "11.1.4"
+
 "sylvester@>= 0.0.12", "sylvester@>= 0.0.8":
   "integrity" "sha1-KYexzivS84sNzio0OIiEv6RADqc="
   "resolved" "https://registry.npmjs.org/sylvester/-/sylvester-0.0.21.tgz"

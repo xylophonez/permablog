@@ -19,6 +19,8 @@ render() {
   return(
   <>
   <Modal
+        size="lg"
+        centered
         show={this.props.showQuestionModal}
         onHide={this.props.hideQuestionModal}
       >
@@ -27,7 +29,7 @@ render() {
                     <div>
                         <input
                             placeholder="AMA ID (e.g. @arweaveNews_1615928471657_AMA)"
-                            className="modal-field mt-2"
+                            className="modal-field mt-2 mb-2"
                             type="text"
                             id="amaId"
                             name="amaId"

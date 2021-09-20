@@ -1,5 +1,5 @@
 body {
-  font-family: 'monospace' !important;
+  font-family: 'Courier New', monospace !important;
 }
 
 .App {
@@ -52,9 +52,13 @@ body {
 }
 
 .btn-success, .swal-button--confirm {
-  border-color: #AAE935 !important;
-  background-color: #AAE935 !important;
-  color: black !important;
+  border-color: #198754 !important;
+  background-color: #198754 !important;
+  color: white !important;
+}
+
+.bg-success {
+  background-color: #78e08f !important;
 }
 
 .btn-danger {

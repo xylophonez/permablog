@@ -1,5 +1,6 @@
 import { React, Component } from 'react'
-import { Navbar, Button, Row, NavLink } from 'react-bootstrap'
+import { Navbar, Button, NavLink } from 'react-bootstrap'
+import Swal from 'sweetalert2'
 
 export default class Header extends Component {
 
@@ -10,9 +11,22 @@ export default class Header extends Component {
     };
   }
 
+  installArConnectAlert = () => {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Install ArConnect to continue',
+      text: 'Permablog uses ArConnect to make it easier to authenticate and send transactions for questions and answers',
+      footer: '<a href="https://arconnect.io" rel="noopener noreferrer" target="_blank">Download ArConnect here</a>'
+    })
+  }
+
   arconnectConnect = () => {
-    window.arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGNATURE', 'SIGN_TRANSACTION'])
-    this.setState({walletConnected: true})
+    if (window.arweaveWallet) {
+      window.arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGNATURE', 'SIGN_TRANSACTION'])
+      this.setState({walletConnected: true})
+    } else {
+      this.installArConnectAlert()
+    }
   }
 
   arconnectDisconnect = () => {
@@ -29,16 +43,16 @@ export default class Header extends Component {
         <Navbar.Collapse className="justify-content-end">
           <div className="d-flex">
             <Navbar.Text className="p-2">
-              {this.state.walletConnected ? 
+          {this.state.walletConnected ? 
                  <Button variant="outline-danger" onClick={ () => this.arconnectDisconnect() }>Disconnect wallet</Button> :
                  <Button variant="primary" onClick={ () => this.arconnectConnect() }>Connect wallet</Button>
               }
-            </Navbar.Text>
-            </div>
-        </Navbar.Collapse>
-        </Navbar>
-      </div>
+              </Navbar.Text>
+              </div>
+              </Navbar.Collapse>
+      </Navbar>
+</div>
+
     )
   }
-
 }

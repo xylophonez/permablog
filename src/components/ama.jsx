@@ -1,10 +1,11 @@
 import { React, Component } from 'react'
-import { Alert, Button, Row, Card, Badge } from 'react-bootstrap'
+import { Alert, Button, Card, Badge } from 'react-bootstrap'
 import QuestionModal from './question-modal.jsx'
 import AnswerModal from './answer-modal.jsx'
 import ReactTooltip from 'react-tooltip'
 import { readContract, interactWrite } from 'smartweave'
 import { AMA_CONTRACT, arweave } from '../utils/arweave'
+import Swal from 'sweetalert2'
 
 export default class Ama extends Component {
 
@@ -36,7 +37,6 @@ loadAma = async () => {
   }
 
   getQuestions = (ama) => {
-    console.log(ama)
     let questions = []
     let qs = ama.questions
     let as = ama.answers
@@ -49,7 +49,7 @@ loadAma = async () => {
             <hr/>
             {this.getAnswers(q, as)}
             {q.answers && <span className="answer-text unalign">{q.answers[0]}</span>}
-            {q.answers && q.answers.length > 0 ? null : <span><Button className="mb-4" onClick={() => this.showAnswerModal(q['QID'])} variant="link">Answer</Button></span> }
+            {q.answers && q.answers.length > 0 || ama.imported ? null : <span><Button className="mb-4" onClick={() => this.showAnswerModal(q['QID'], ama)} variant="link">Answer</Button></span> }
           </Card>
         </div>
       )
@@ -77,10 +77,8 @@ loadAma = async () => {
     let ama
     let amaId = this.props.match.params.amaId
     let amas = await this.loadAma()
-    console.log(amas)
 
     for (let i in amas) {
-      console.log(amas[i])
       if (amas[i].id === amaId) {
         ama = amas[i]
       }
@@ -100,20 +98,64 @@ loadAma = async () => {
       )
   }
 
-  showAnswerModal = (qId) => {
-    console.log(qId)
-    this.setState({qId: qId})
-    this.setState({answerModalOpen: true})
-    console.log(this.state)
+  loggedIn = async () => {
+    if (window.arweaveWallet) {
+      let permissions = await window.arweaveWallet.getPermissions()
+      return permissions.length > 2 && await window.arweaveWallet.getActiveAddress() ? true : false
+    }
+    else {
+      return false
+    }
+  }
+
+  getAddr = async () => {
+    let addr = await window.arweaveWallet.getActiveAddress()
+    return addr
+  }
+
+  authErrorAlert = () => {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Log in to ask and answer questions',
+      text: 'Permablog uses ArConnect to make it easy to authenticate',
+      footer: '<a href="https://arconnect.io" rel="noopener noreferrer" target="_blank">Learn more about ArConnect</a>'
+    })
+  }
+
+  notGuestAlert = () => {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Are you the guest of this AMA?',
+      text: "Only the AMA guest can answer questions. If that's you, change to the right wallet in ArConnect",
+      footer: '<a href="https://arconnect.io rel="noopener noreferrer" target="_blank">Learn more about ArConnect</a>'
+    })
+  }
+
+  showAnswerModal = async (qId, ama) => {
+    if (!await this.loggedIn()) {
+      this.authErrorAlert()
+    } else {
+      let addr = await this.getAddr()
+      if (ama.guestAddresses.includes(addr)) {
+      this.setState({qId: qId})
+      this.setState({answerModalOpen: true})
+      } else {
+        this.notGuestAlert()
+      }
+    }
   }
 
   hideAnswerModal = () => {
     this.setState({answerModalOpen: false})
   }
 
-  showQuestionModal = (ama) => {
-    this.setState({amaId: ama.id})
-    this.setState({questionModalOpen: true})
+  showQuestionModal = async (ama) => {
+    if (!await this.loggedIn()) {
+      this.authErrorAlert()
+    } else {
+      this.setState({amaId: ama.id})
+      this.setState({questionModalOpen: true})
+    }
   }
 
   hideQuestionModal = () => {
@@ -125,8 +167,6 @@ loadAma = async () => {
     e.preventDefault()
     let question = e.target.questionText.value
     let amaId = e.target.amaId.value
-    console.log(question)
-    console.log(amaId)
     this.createQuestion(amaId, question)
     this.setState({questionModalOpen: false})
   }
@@ -136,7 +176,6 @@ loadAma = async () => {
     let answerText = e.target.answerText.value
     let qId = e.target.qId.value
     let amaId = this.props.match.params.amaId
-    console.log(this.state)
     this.createAnswer(qId, amaId, answerText)
     this.setState({answerModalOpen: false})
   }
@@ -146,41 +185,64 @@ loadAma = async () => {
       const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
       const txId = await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
       if (txId) {
-        this.setState({lastQuestionTx: txId})
-        this.setState({submitAlert: true})
-        this.setState({questionFailed: false})
+        this.setState({
+          lastQuestionTx: txId,
+          submitAlert: true,
+          questionFailed: false         
+        })
       } else {
-        this.setState({submitAlert: false})
-        this.setState({questionFailed: true})
+        this.setState({
+          submitAlert: false,
+          questionFailed: true
+        })
       }
   }
 
   createAnswer = async (qId, amaId, answerText) => {
-    console.log(amaId)
     const input = {'function': 'answer', 'id': amaId, 'qid': qId, 'answer': answerText}
     const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
     const txId = await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
     if (txId) {
-      console.log(txId)
+      this.setState({
+        lastAnswerTx: txId,
+        answerSubmitAlert: true,
+        answerFailed: false
+      })
     } else {
-      console.log('some error!')
+      this.setState({
+        answerSubmitAlert: false,
+        answerFailed: true
+      })
     }
   }
 
   render() {
      return(
       <>
+      {/* question success and failure alerts */}
       { this.state.questionFailed ?
       <Alert transition="fade" className="mt-4 show alert alert-danger">
          Question failed to submit - check you are connected with an account that holds AR
        </Alert>
-       
       : null}
       { this.state.submitAlert ?
          <Alert transition="fade" className="mt-4 show alert alert-success">
          Question submitted! {" "}<a href={`https://viewblock.io/arweave/tx/${this.state.lastQuestionTx}`}>Check on viewblock.io in a few minutes</a>
        </Alert>
       : null }
+
+      {/* answer success and failure alerts */}
+      { this.state.answerFailed ?
+      <Alert transition="fade" className="mt-4 show alert alert-danger">
+         Answer failed to submit - check you are connected with an account that holds AR
+       </Alert>
+      : null}
+      { this.state.answerSubmitAlert ?
+         <Alert transition="fade" className="mt-4 show alert alert-success">
+         Answer submitted! {" "}<a href={`https://viewblock.io/arweave/tx/${this.state.lastAnswerTx}`}>Check on viewblock.io in a few minutes</a>
+       </Alert>
+      : null }
+
       { this.state.questionModalOpen ? 
         <QuestionModal
           showQuestionModal={this.state.questionModalOpen}

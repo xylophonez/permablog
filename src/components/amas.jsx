@@ -16,8 +16,7 @@ export default class Amas extends Component {
   }
 
   parseActiveAmas = () => {
-    let amas = this.props.data
-    console.log(amas)
+    let amas = this.props.data.reverse()
     let amasHtml = []
     for (let i in amas) {
       let ama = amas[i]
@@ -34,7 +33,7 @@ export default class Amas extends Component {
           </div>
           <Card.Body>
             <p>{ama.description}</p>
-            <Button className="mb-3"  href={`#/amas/${ama.id}`} variant="outline-primary">Go to AMA</Button>
+            <Button className="mb-3"  href={`#/amas/${ama.id}`} variant="outline-primary">Ask a question</Button>
             <footer className="ama-id"><code className="mt-2">AMA id: {ama.id}</code></footer>
           </Card.Body>
           </Card>
@@ -49,7 +48,6 @@ export default class Amas extends Component {
 
   parseArchivedAmas = () => {
     let amas = this.props.data
-    console.log(amas)
     let amasHtml = []
        for (let i in amas) {
       let ama = amas[i]

@@ -28,7 +28,6 @@ export default class App extends Component {
   loadAma = async () => {
     let arr = []
     let tx = await readContract(arweave, AMA_CONTRACT)
-    console.log(tx)
     for (const [key, value] of Object.entries(tx.ama)) {
       arr.push(value)
     }
