@@ -5,6 +5,7 @@ import Ama from './components/ama.jsx'
 import Index from './components/index.jsx'
 import { HashRouter as Router, Route } from 'react-router-dom'
 import Amas from './components/amas.jsx'
+import Admin from './components/admin.jsx'
 import { readContract } from 'smartweave'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AMA_CONTRACT, arweave } from './utils/arweave'
@@ -42,6 +43,7 @@ export default class App extends Component {
             {<Route exact path="/amas/:amaId" render={({match}) => <Ama match={match} data={this.state.amas}/> } />}
             <Route exact path="/" render={() => <Index/> }/>
             <Route exact path="/amas" render={() => <Amas data={this.state.amas}/> }/>
+            <Route exact path="/admin" render={() => <Admin/>} />
           </Router>
       </div>
     );
