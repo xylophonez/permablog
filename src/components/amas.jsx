@@ -11,7 +11,15 @@ export default class Amas extends Component {
     };
   }
 
-  componentDidMount() {
+  getBlockHeight = async () => {
+    const url = 'https://arweave.net'
+    let res = await fetch(url)
+    let body = await res.json()
+    this.setState({height: body.height})
+  }
+
+  async componentDidMount() {
+    this.getBlockHeight()
     this.setState({loading: true})
   }
 
@@ -20,27 +28,35 @@ export default class Amas extends Component {
     let amasHtml = []
     for (let i in amas) {
       let ama = amas[i]
-      if (!ama.imported) {
+     // if (!ama.imported) {
         amasHtml.push(
           <>
           <Card border="dark" className="m-4 mx-auto mb-2">
           <div className="">
             <Card.Header>
               <Button size="lg" variant="link"  href={`#/amas/${ama.id}`}>{ama.guests || ama.guest}</Button>
-              <span className="small" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions."><Badge bg="info">{ama.reward} $ARN</Badge> <Badge bg="success">Active</Badge> </span>
-              <ReactTooltip globalEventOff="hover"/>
+              { ama.endOn > this.state.height ? 
+              <><span className="small" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions.">
+                <Badge className="" bg="info">{ama.reward} $ARN</Badge>
+                <span> </span>
+                <Badge bg="success">Active</Badge> </span>
+              <ReactTooltip globalEventOff="hover"/></>
+              : 
+              <span className="small"><Badge bg="secondary">Archived</Badge></span> }
             </Card.Header>
           </div>
           <Card.Body>
             <p>{ama.description}</p>
+            { ama.endOn > this.state.height ?
             <Button className="mb-3"  href={`#/amas/${ama.id}`} variant="outline-primary">Ask a question</Button>
+            : null }
             <footer className="ama-id"><code className="mt-2">AMA id: {ama.id}</code></footer>
           </Card.Body>
           </Card>
           </>
         )
-      }
-    }
+      //}
+  }
 
     return amasHtml
 
@@ -87,7 +103,7 @@ export default class Amas extends Component {
           {this.parseActiveAmas()}
         </Container>
         <Container>
-          {this.parseArchivedAmas()}
+          {/*this.parseArchivedAmas() */}
         </Container></>
         }
       </>
