@@ -25,8 +25,15 @@ loadAma = async () => {
     return arr
   }
 
+  getBlockHeight = async () => {
+    const url = 'https://arweave.net'
+    let res = await fetch(url)
+    let body = await res.json()
+    this.setState({height: body.height})
+  }
 
   async componentDidMount() {
+    this.getBlockHeight()
     this.setState({loading: true})
     this.setState({ama: await this.lookUpAma()})
     this.setState({loading: false})
@@ -83,16 +90,19 @@ loadAma = async () => {
         ama = amas[i]
       }
     }
+
+
+
       return(
         <div>
         <div className="">
             <span className="ama-guest-name">{this.amaGuest(ama)}</span>
-            {!ama.imported ? <span className="small p-4" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions."><Badge bg="info">{ama.reward} $ARN</Badge></span> : null }
+            { ama.endOn > this.state.height ? <><span className="small p-4" data-html="true" data-tip="ARN (Arweave News Token) is rewarded to users<br/>whose questions are answered by AMA guests,<br/>and to guests for answering questions."><Badge bg="info">{ama.reward} $ARN</Badge></span></> : null }
             <ReactTooltip globalEventOff="hover"/>
         </div>
           <p className="ama-desc">{ama.description}</p>
           <footer className="ama-id"><code className="mt-2">AMA id: {ama.id}</code></footer>
-          { !ama.imported ? <Button className="m-3" onClick={() => this.showQuestionModal(ama)} variant="primary">Ask a question</Button> : null }
+          { ama.endOn > this.state.height ? <><Button className="m-3" onClick={() => this.showQuestionModal(ama)} variant="primary">Ask a question</Button></> : null }
           {this.getQuestions(ama)}
     </div>
       )

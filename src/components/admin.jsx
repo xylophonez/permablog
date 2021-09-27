@@ -30,10 +30,9 @@ export default class Admin extends Component {
       'guests': guests,
       'guestAddresses': guestAddresses,
       'description': description,
-      'reward': reward,
-      'period': period
+      'reward': parseInt(reward),
+      'period': parseInt(period)
     }
-
     const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
     const txId = await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags);
 
