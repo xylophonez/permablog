@@ -190,10 +190,28 @@ loadAma = async () => {
     this.setState({answerModalOpen: false})
   }
 
+  interactionWrapper = async (input, tags) => {
+    const tx = await arweave.createTransaction({
+      data: String(Date.now()),
+    });
+  
+    for (let tag in tags) {
+      tx.addTag(tag, tags[tag]);
+    }
+  
+    tx.addTag("Input", JSON.stringify(input));
+    tx.reward = (+tx.reward * 10).toString();
+  
+    await arweave.transactions.sign(tx);
+    await arweave.transactions.post(tx);
+  
+    return tx.id;
+  };
+
     createQuestion = async (amaId, questionText) => {
       const input = {'function': 'ask', 'id': amaId, 'question': questionText}
       const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
-      const txId = await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
+      const txId = await this.interactionWrapper(input, tags); // await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
       if (txId) {
         this.setState({
           lastQuestionTx: txId,
@@ -211,7 +229,7 @@ loadAma = async () => {
   createAnswer = async (qId, amaId, answerText) => {
     const input = {'function': 'answer', 'id': amaId, 'qid': qId, 'answer': answerText}
     const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
-    const txId = await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
+    const txId = await this.interactionWrapper(input, tags); //await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
     if (txId) {
       this.setState({
         lastAnswerTx: txId,
