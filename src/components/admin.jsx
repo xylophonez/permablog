@@ -1,7 +1,7 @@
 import { React, Component } from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { interactWrite } from 'smartweave'
-import { AMA_CONTRACT, arweave } from '../utils/arweave'
+import { AMA_CONTRACT, arweave, authorizedAddrs } from '../utils/arweave'
 import Swal from 'sweetalert2'
 
 export default class Admin extends Component {
@@ -12,9 +12,9 @@ export default class Admin extends Component {
     };
   }
 
-  componentDidMount() {
-    let addr = window.arweaveWallet.getActiveAddress()
-    this.setState({ addr: addr })
+  componentDidMount = async () => {
+    const addr = await window.arweaveWallet.getActiveAddress();
+    this.setState({addr: addr});
   }
 
   createAma = async (e) => {
@@ -66,6 +66,7 @@ export default class Admin extends Component {
             <form onSubmit={this.createAma}>
               <div>
                 <input
+                  required
                   placeholder="Guest names"
                   className="modal-field mt-2 mb-2"
                   type="text"
@@ -76,6 +77,7 @@ export default class Admin extends Component {
               </div>
               <div>
                 <input
+                  required
                   placeholder="Guest addresses"
                   className="modal-field mt-2 mb-2"
                   type="text"
@@ -86,6 +88,7 @@ export default class Admin extends Component {
               </div>
               <div>
                 <input
+                  required
                   placeholder="Guest description"
                   className="modal-field mt-2 mb-2"
                   type="text"
@@ -96,7 +99,8 @@ export default class Admin extends Component {
               </div>
               <div>
                 <input
-                  placeholder="PST reward"
+                  required
+                  placeholder="PST reward (e.g. 10)"
                   className="modal-field mt-2 mb-2"
                   type="text"
                   id="reward"
@@ -106,6 +110,7 @@ export default class Admin extends Component {
               </div>
               <div>
                 <input
+                  required
                   placeholder="Days the AMA should last"
                   className="modal-field mt-2 mb-2"
                   type="text"
@@ -115,13 +120,13 @@ export default class Admin extends Component {
                 </input>
               </div>
               <div>
-                {this.state.addr ?
+                {this.state.addr && authorizedAddrs.includes(this.state.addr) ?
                   <Button {...this.state.submittingQuestion ? `disabled` : ``} variant="outline-primary" className="mt-3 mb-3" type="submit">
                     {this.state.submittingQuestion ? 'Loading...' : 'Create AMA'}
                   </Button>
                   :
                   <Button disabled variant="outline-primary" className="mt-2 mb-5" type="submit">
-                    Connect wallet to create a new AMA
+                    Connect an admin wallet to create a new AMA
                   </Button>
                 }
               </div>
