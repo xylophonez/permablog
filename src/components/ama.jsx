@@ -210,7 +210,7 @@ loadAma = async () => {
 
     createQuestion = async (amaId, questionText) => {
       const input = {'function': 'ask', 'id': amaId, 'question': questionText}
-      const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
+      const tags = { "Contract": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
       const txId = await this.interactionWrapper(input, tags); // await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
       if (txId) {
         this.setState({
@@ -228,7 +228,7 @@ loadAma = async () => {
 
   createAnswer = async (qId, amaId, answerText) => {
     const input = {'function': 'answer', 'id': amaId, 'qid': qId, 'answer': answerText}
-    const tags = { "Contract-Src": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
+    const tags = { "Contract": AMA_CONTRACT, "App-Name": "SmartWeaveAction", "App-Version": "0.3.0", "Content-Type": "text/plain" }
     const txId = await this.interactionWrapper(input, tags); //await interactWrite(arweave, "use_wallet", AMA_CONTRACT, input, tags)
     if (txId) {
       this.setState({
