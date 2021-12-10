@@ -15,6 +15,7 @@ export default class Admin extends Component {
   componentDidMount = async () => {
     const addr = await window.arweaveWallet.getActiveAddress();
     this.setState({addr: addr});
+    console.log(addr)
   }
 
   createAma = async (e) => {
